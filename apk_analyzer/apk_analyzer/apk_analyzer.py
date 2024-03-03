@@ -3,11 +3,14 @@ import asyncio
 
 from apk_analyzer.dto import AnalysisResult, StartAnalysis, AnalysisStatus
 from apk_analyzer.utils import download_file, calc_md5
+from emulators import EmulationPool
+from config import EmulatorConfig
 
 
 class ApkAnalyzer:
     def __init__(self, logger=None):
         self.logger = logger
+        self.emulation_pool = EmulationPool(EmulatorConfig)
         pass
 
     def start_analysis(self, file) -> StartAnalysis:
