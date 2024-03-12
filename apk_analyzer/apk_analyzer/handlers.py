@@ -20,6 +20,7 @@ async def analyze_apk(file: UploadFile):
     result = analyzer.start_analysis(file)
     return result
 
+
 @router.post("/apk", response_model=AnalysisStatus)
 async def update_status(md5: str):
     result = analyzer.get_status(md5)
