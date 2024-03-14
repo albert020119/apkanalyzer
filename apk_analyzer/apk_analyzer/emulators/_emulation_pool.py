@@ -1,3 +1,5 @@
+import time
+
 from ._emulator import Emulator
 from ..config import EmulatorConfig
 
@@ -5,10 +7,11 @@ from ..config import EmulatorConfig
 class EmulationPool:
     def __init__(self, emulation_config: EmulatorConfig):
         self.emulators = []
-        for avd_path in emulation_config.images:
+        for (avd_path, port) in emulation_config.images:
             emu = Emulator(
                 emulator_path=emulation_config.emulator_path,
-                avd=avd_path
+                avd=avd_path,
+                port=port
             )
             self.emulators.append(emu)
 
@@ -21,3 +24,6 @@ class EmulationPool:
     def start_emulators(self):
         for emulator in self.emulators:
             emulator.start_emulator()
+        time.sleep(5)
+        for emulator in self.emulators:
+            print(emulator.is_running())
