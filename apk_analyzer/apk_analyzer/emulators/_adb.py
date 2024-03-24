@@ -9,12 +9,13 @@ class ADB:
         self.port = port
 
     def cmd(self, commands: list):
-        command = [self.adb_path, self.port]
+        command = [self.adb_path, '-s', 'emulator-' + self.port]
         command.extend(commands)
-        subprocess.Popen(command, shell=True, close_fds=True, stdout=None)
+        process = subprocess.run(command, shell=True, close_fds=True, capture_output=True)
+        return process.stdout, process.stderr
 
     def shell(self, commands: list):
-        command = [self.adb_path, self.port, 'shell']
+        command = [self.adb_path, '-s', 'emulator-' + self.port, 'shell']
         command.extend(commands)
-        subprocess.Popen(command, shell=True, close_fds=True, stdout=None)
-
+        process = subprocess.run(command, shell=True, close_fds=True, capture_output=True)
+        return process.stdout, process.stderr

@@ -9,9 +9,10 @@ class Emulator:
         self.emulator_path = emulator_path
         self.avd = avd
         self.adb = ADB(ADBConfig, port=port)
+        self.port = port
 
     def start_emulator(self):
-        self.run_command(self.emulator_path, self.avd)
+        self.run_command(self.emulator_path, '-port', self.port, self.avd)
 
     @staticmethod
     def run_command(executable, *args):
@@ -19,8 +20,11 @@ class Emulator:
         command.extend(args)
         subprocess.Popen(command, shell=True, close_fds=True, stdout=None)
 
+    @property
     def is_running(self):
-        self.adb.shell(["getprop", "init.svc.bootanim"])
+        output, _ = self.adb.shell(["getprop", "init.svc.bootanim"])
+        is_running = True if output.decode('utf-8').strip() == 'stopped' else False
+        return is_running
 
     def get_sdk(self):
         pass
