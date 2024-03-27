@@ -17,7 +17,7 @@ class EmulationPool:
 
     def get_available_emulator(self, apk) -> Emulator | None:
         for emulator in self.emulators:
-            if emulator.get_sdk() > apk.get_target_sdk_version():
+            if emulator.get_sdk() > int(apk.get_target_sdk_version()):
                 return emulator
         return None
 

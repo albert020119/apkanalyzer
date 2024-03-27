@@ -27,4 +27,7 @@ class Emulator:
         return is_running
 
     def get_sdk(self):
-        pass
+        output, _ = self.adb.shell(["grep", "ro.build.version.sdk=", "system/build.prop"])
+        # TODO fix this shit
+        return int(output.decode('utf-8')[-2:-1])
+

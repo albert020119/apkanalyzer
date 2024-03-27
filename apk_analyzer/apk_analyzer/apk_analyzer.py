@@ -26,7 +26,7 @@ class ApkAnalyzer:
 
     async def analyze(self, filepath: str) -> AnalysisResult:
         self.logger.info(f"starting to analyze sample: {filepath}")
-        apk, _, _ = AnalyzeAPK(filepath, raw=True)
+        apk, _, _ = AnalyzeAPK(filepath.encode('utf-8'))
         emulator = self.emulation_pool.get_available_emulator(apk)
         if not emulator:
             pass  # TODO no good emulator found, update stats to failed or sm
