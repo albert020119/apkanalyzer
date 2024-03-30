@@ -15,6 +15,7 @@ class ApkAnalyzer:
         self.logger = logger
         self.emulation_pool = EmulationPool(EmulatorConfig)
         self.emulation_pool.start_emulators()
+        self.emulation_pool.setup_frida_all()
         self.statuses: dict[str, AnalysisStatus | None] = {}
         pass
 
@@ -32,6 +33,11 @@ class ApkAnalyzer:
         if not emulator:
             pass  # TODO no good emulator found, update stats to failed or sm
         self.statuses.get(md5).found_emulator = True
+        emulator.lock()
+        emulator.install_sample(filepath)
+        self.statuses.get(md5).installed = True
+        emulator.release()
+        return
 
     async def get_status(self, md5: str) -> AnalysisStatus | None:
         return self.statuses.get(md5)

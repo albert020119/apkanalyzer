@@ -2,6 +2,7 @@ import subprocess
 
 from ._adb import ADB
 from ..config import ADBConfig
+from com.dtmilano.android.viewclient import ViewClient
 
 
 class Emulator:
@@ -9,6 +10,9 @@ class Emulator:
         self.emulator_path = emulator_path
         self.avd = avd
         self.adb = ADB(ADBConfig, port=port)
+        self.viewclient = None
+        self.device = None
+        self.serialno = None
         self.port = port
         self.available = True
 
@@ -21,8 +25,14 @@ class Emulator:
         command.extend(args)
         subprocess.Popen(command, shell=True, close_fds=True, stdout=None, start_new_session=True)
 
+    def install_sample(self, path):
+        output, _ = self.adb.cmd(["install", path])
+        return output.decode('utf-8')
+
     @property
     def is_running(self):
+        self.device, self.serialno = ViewClient.connectToDeviceOrExit(serialno="emulator-{}".format(self.port))
+        self.viewclient = ViewClient(device=self.device, serialno=self.serialno)
         output, _ = self.adb.shell(["getprop", "init.svc.bootanim"])
         is_running = True if output.decode('utf-8').strip() == 'stopped' else False
         return is_running
@@ -37,3 +47,12 @@ class Emulator:
 
     def available(self):
         return self.available
+
+    def lock(self):
+        self.available = False
+
+    def release(self):
+        self.available = True
+
+    def setup_frida(self):
+        pass
