@@ -10,6 +10,7 @@ class Emulator:
         self.avd = avd
         self.adb = ADB(ADBConfig, port=port)
         self.port = port
+        self.available = True
 
     def start_emulator(self):
         self.run_command(self.emulator_path, '-port', self.port, self.avd)
@@ -18,7 +19,7 @@ class Emulator:
     def run_command(executable, *args):
         command = [executable]
         command.extend(args)
-        subprocess.Popen(command, shell=True, close_fds=True, stdout=None)
+        subprocess.Popen(command, shell=True, close_fds=True, stdout=None, start_new_session=True)
 
     @property
     def is_running(self):
@@ -27,7 +28,12 @@ class Emulator:
         return is_running
 
     def get_sdk(self):
-        output, _ = self.adb.shell(["grep", "ro.build.version.sdk=", "system/build.prop"])
+        output, _ = self.adb.shell(["getprop", "ro.build.version.sdk"])
         # TODO fix this shit
-        return int(output.decode('utf-8')[-2:-1])
+        rez = output.decode('utf-8')
+        if rez == '':
+            return 0
+        return int(output.decode('utf-8').strip())
 
+    def available(self):
+        return self.available

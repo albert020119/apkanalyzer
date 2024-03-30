@@ -5,4 +5,14 @@ from dataclasses import dataclass
 class AnalysisStatus:
     filename: str
     md5: str
-    installed: str
+    found_emulator: bool
+    installed: bool
+
+    @staticmethod
+    def get_initial(filename: str, md5: str):
+        return AnalysisStatus(
+            filename=filename,
+            md5=md5,
+            found_emulator=False,
+            installed=False
+        )

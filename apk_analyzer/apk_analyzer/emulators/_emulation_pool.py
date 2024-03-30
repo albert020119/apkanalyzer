@@ -17,7 +17,8 @@ class EmulationPool:
 
     def get_available_emulator(self, apk) -> Emulator | None:
         for emulator in self.emulators:
-            if emulator.get_sdk() > int(apk.get_target_sdk_version()):
+            if (emulator.get_sdk() >= int(apk.get_target_sdk_version())) and \
+                    emulator.available:
                 return emulator
         return None
 
@@ -27,5 +28,3 @@ class EmulationPool:
         time.sleep(15)
         for emulator in self.emulators:
             print("{} is running: {}".format(emulator.avd, emulator.is_running))
-
-

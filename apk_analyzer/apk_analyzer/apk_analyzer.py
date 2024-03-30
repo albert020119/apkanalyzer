@@ -15,22 +15,23 @@ class ApkAnalyzer:
         self.logger = logger
         self.emulation_pool = EmulationPool(EmulatorConfig)
         self.emulation_pool.start_emulators()
-        self.stats = []
+        self.statuses: dict[str, AnalysisStatus | None] = {}
         pass
 
     def start_analysis(self, file) -> StartAnalysis:
         downloaded_file_path = download_file(file)
         checksum = calc_md5(downloaded_file_path)
-        asyncio.create_task(self.analyze(downloaded_file_path))
+        self.statuses[checksum] = AnalysisStatus.get_initial(downloaded_file_path, checksum)
+        asyncio.create_task(self.analyze(downloaded_file_path, checksum))
         return StartAnalysis(md5=checksum, filename=file.filename)
 
-    async def analyze(self, filepath: str) -> AnalysisResult:
+    async def analyze(self, filepath: str, md5: str) -> AnalysisResult:
         self.logger.info(f"starting to analyze sample: {filepath}")
         apk, _, _ = AnalyzeAPK(filepath.encode('utf-8'))
         emulator = self.emulation_pool.get_available_emulator(apk)
         if not emulator:
             pass  # TODO no good emulator found, update stats to failed or sm
-        pass
+        self.statuses.get(md5).found_emulator = True
 
-    async def get_status(self, md5: str) -> AnalysisStatus:
-        pass
+    async def get_status(self, md5: str) -> AnalysisStatus | None:
+        return self.statuses.get(md5)
