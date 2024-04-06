@@ -17,5 +17,5 @@ class ADB:
     def shell(self, commands: list):
         command = [self.adb_path, '-s', 'emulator-' + self.port, 'shell']
         command.extend(commands)
-        process = subprocess.run(command, shell=True, close_fds=True, capture_output=True)
+        process = subprocess.run(command, shell=False, close_fds=True, capture_output=True, timeout=5)
         return process.stdout, process.stderr

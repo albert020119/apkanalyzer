@@ -3,3 +3,5 @@ uvicorn
 python-multipart
 androidviewclient
 frida
+beautifulsoup4
+requests

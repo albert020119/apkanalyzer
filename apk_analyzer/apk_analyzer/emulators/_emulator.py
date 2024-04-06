@@ -1,7 +1,8 @@
 import subprocess
 
-from ._adb import ADB
+from .adb import ADB
 from ..config import ADBConfig
+from ..frida.utils import get_frida_latest, download_frida_server, install_frida_server, start_frida_server
 from com.dtmilano.android.viewclient import ViewClient
 
 
@@ -39,7 +40,6 @@ class Emulator:
 
     def get_sdk(self):
         output, _ = self.adb.shell(["getprop", "ro.build.version.sdk"])
-        # TODO fix this shit
         rez = output.decode('utf-8')
         if rez == '':
             return 0
@@ -55,4 +55,8 @@ class Emulator:
         self.available = True
 
     def setup_frida(self):
-        pass
+        version, cpu_arch = get_frida_latest(self.adb)
+        download_frida_server(version=version, cpu_arch=cpu_arch)
+        install_frida_server(self.adb, cpu_arch=cpu_arch)
+        output = start_frida_server(self.adb)
+        print(output)

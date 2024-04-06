@@ -25,10 +25,9 @@ class EmulationPool:
     def start_emulators(self):
         for emulator in self.emulators:
             emulator.start_emulator()
-        time.sleep(30)
+        time.sleep(10)
         for emulator in self.emulators:
             print("{} is running: {}".format(emulator.avd, emulator.is_running))
-
 
     def setup_frida_all(self):
         for emulator in self.emulators:
