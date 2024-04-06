@@ -36,6 +36,9 @@ class ApkAnalyzer:
         emulator.lock()
         emulator.install_sample(filepath)
         self.statuses.get(md5).installed = True
+        emulator.load_hooks()
+        emulator.instrument()
+        emulator.fool_around()
         emulator.release()
         return
 
