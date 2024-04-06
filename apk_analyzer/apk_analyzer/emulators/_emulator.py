@@ -3,6 +3,7 @@ import subprocess
 from .adb import ADB
 from ..config import ADBConfig
 from ..frida.utils import get_frida_latest, download_frida_server, install_frida_server, start_frida_server
+from ..frida.hooks import Hook
 from com.dtmilano.android.viewclient import ViewClient
 
 
@@ -60,3 +61,9 @@ class Emulator:
         install_frida_server(self.adb, cpu_arch=cpu_arch)
         output = start_frida_server(self.adb)
         print(output)
+
+    def instrument(self, apk, hooks: list[Hook]):
+        pass
+
+    def fool_around(self):
+        pass

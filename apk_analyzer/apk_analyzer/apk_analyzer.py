@@ -8,6 +8,7 @@ from apk_analyzer.utils import download_file, calc_md5
 from .emulators import EmulationPool
 from .config import EmulatorConfig
 from .dto import AnalysisStatus
+from .frida.hooks import get_hooks
 
 
 class ApkAnalyzer:
@@ -32,12 +33,16 @@ class ApkAnalyzer:
         emulator = self.emulation_pool.get_available_emulator(apk)
         if not emulator:
             pass  # TODO no good emulator found, update stats to failed or sm
+        self.logger.info("found emulator: {}".format(emulator.avd))
         self.statuses.get(md5).found_emulator = True
         emulator.lock()
         emulator.install_sample(filepath)
+        self.logger.info("installed sample on emulator")
         self.statuses.get(md5).installed = True
-        emulator.load_hooks()
-        emulator.instrument()
+        hooks = get_hooks()
+        self.logger.info("loaded hooks")
+        emulator.instrument(apk, hooks)
+        self.statuses.get(md5).started = True
         emulator.fool_around()
         emulator.release()
         return
