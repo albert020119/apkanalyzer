@@ -1,9 +1,12 @@
 import subprocess
+import time
+
+import frida
 
 from .adb import ADB
 from ..config import ADBConfig
 from ..frida.utils import get_frida_latest, download_frida_server, install_frida_server, start_frida_server
-from ..frida.hooks import Hook
+from ..frida.hooks import Hook, HookHandler
 from com.dtmilano.android.viewclient import ViewClient
 
 
@@ -17,6 +20,7 @@ class Emulator:
         self.serialno = None
         self.port = port
         self.available = True
+        self.frida_session = None
 
     def start_emulator(self):
         self.run_command(self.emulator_path, '-port', self.port, self.avd)
@@ -29,6 +33,10 @@ class Emulator:
 
     def install_sample(self, path):
         output, _ = self.adb.cmd(["install", path])
+        return output.decode('utf-8')
+
+    def uninstall(self, pkn: str):
+        output, _ = self.adb.cmd(['uninstall', pkn])
         return output.decode('utf-8')
 
     @property
@@ -62,8 +70,30 @@ class Emulator:
         output = start_frida_server(self.adb)
         print(output)
 
-    def instrument(self, apk, hooks: list[Hook]):
-        pass
+    def instrument(self, apk, hooks: list[Hook], hook_handler: HookHandler):
+        device_manager = frida.get_device_manager()
+        frida_device = None
+        for device in device_manager.enumerate_devices():
+            if self.port in device.name:
+                frida_device = device
+        if not frida_device:
+            return
+        pid = frida_device.spawn(apk.package)
+        self.frida_session = frida_device.attach(pid)
+
+        frida_device.resume(pid)
+        for hook in hooks:
+            script = self.frida_session.create_script(hook.script)
+            script.on('message', hook_handler.on_hook)
+            script.load()
+            print("loaded hook: {}".format(hook.name))
 
     def fool_around(self):
-        pass
+        time.sleep(10)
+        return
+
+    def cancel_instrumentation(self):
+        self.frida_session.detach()
+        self.frida_session = None
+
+

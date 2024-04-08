@@ -5,3 +5,4 @@ androidviewclient
 frida
 beautifulsoup4
 requests
+pymongo

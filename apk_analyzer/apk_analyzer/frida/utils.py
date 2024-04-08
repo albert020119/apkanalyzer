@@ -66,6 +66,8 @@ def install_frida_server(device: ADB, cpu_arch):
 
 
 def start_frida_server(device):
+    out, err = device.cmd(["root"])
+    print(out)
     start_cmd = ["/data/local/tmp/frida-server", "&"]
     try:
         device.shell(start_cmd)
