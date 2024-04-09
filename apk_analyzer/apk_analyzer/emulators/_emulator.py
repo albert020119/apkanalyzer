@@ -7,6 +7,7 @@ from .adb import ADB
 from ..config import ADBConfig
 from ..frida.utils import get_frida_latest, download_frida_server, install_frida_server, start_frida_server
 from ..frida.hooks import Hook, HookHandler
+from ..jester import Jester
 from com.dtmilano.android.viewclient import ViewClient
 
 
@@ -88,9 +89,9 @@ class Emulator:
             script.load()
             print("loaded hook: {}".format(hook.name))
 
-    def fool_around(self):
-        time.sleep(10)
-        return
+    def fool_around(self, apk, time_to_run: int):
+        jester = Jester(self.viewclient, apk, time_to_run=time_to_run)
+        jester.start()
 
     def cancel_instrumentation(self):
         self.frida_session.detach()

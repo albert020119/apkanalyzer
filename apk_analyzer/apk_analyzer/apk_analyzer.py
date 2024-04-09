@@ -34,13 +34,15 @@ class ApkAnalyzer:
         emulator.lock()
         self.logger.info("found emulator: {}".format(emulator.avd))
 
-        emulator.install_sample(filepath)
+        emulator.install_sample(filepath)  # TODO was it really installed
         self.logger.info("installed sample on emulator")
         self.analyzer_db.installed(md5)
 
         hooks = get_hooks()
         hook_handler = HookHandler(
-            md5=md5
+            md5=md5,
+            logger=self.logger,
+            repo=self.analyzer_db
         )
         self.logger.info("loaded hooks")
 
@@ -48,7 +50,8 @@ class ApkAnalyzer:
         self.analyzer_db.started(md5)
         self.logger.info("started application")
 
-        emulator.fool_around()
+        emulator.fool_around(apk, time_to_run=25)
+        # TODO some config file that has analysis preferences, asta i din burta
 
         emulator.cancel_instrumentation()
         emulator.release()

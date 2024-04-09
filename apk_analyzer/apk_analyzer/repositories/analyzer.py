@@ -3,6 +3,8 @@ from .sample_entry import SampleEntry, ManifestInfo
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 
+from ..frida.hooks.hook import HookEvent
+
 
 class AnalyzerMongo:
     def __init__(self):
@@ -33,3 +35,6 @@ class AnalyzerMongo:
 
     def set_manifest_info(self, md5: str, manifest: ManifestInfo):
         self.coll.update_one({"md5": md5}, {"$set": {"manifest": manifest.to_dict()}})
+
+    def add_event(self, md5: str, hook_event: HookEvent):
+        self.coll.update_one({"md5": md5}, {"$set": {"hooks": hook_event.to_dict()}})
