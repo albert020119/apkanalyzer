@@ -57,6 +57,7 @@ class ApkAnalyzer:
         emulator.release()
         emulator.uninstall(apk.package)
         self.logger.info("{} finished analysis".format(md5))
+        self.analyzer_db.finished(md5)
         return
 
     async def get_status(self, md5: str) -> AnalysisStatus | None:

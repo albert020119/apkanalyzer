@@ -5,7 +5,7 @@ import frida
 
 from .adb import ADB
 from ..config import ADBConfig
-from ..frida.utils import get_frida_latest, download_frida_server, install_frida_server, start_frida_server
+from ..frida.utils import get_frida_latest, download_frida_server, install_frida_server, start_frida_server, restart_frida
 from ..frida.hooks import Hook, HookHandler
 from ..jester import Jester
 from com.dtmilano.android.viewclient import ViewClient
@@ -68,10 +68,9 @@ class Emulator:
         version, cpu_arch = get_frida_latest(self.adb)
         download_frida_server(version=version, cpu_arch=cpu_arch)
         install_frida_server(self.adb, cpu_arch=cpu_arch)
-        output = start_frida_server(self.adb)
-        print(output)
 
     def instrument(self, apk, hooks: list[Hook], hook_handler: HookHandler):
+        restart_frida(self.adb)
         device_manager = frida.get_device_manager()
         frida_device = None
         for device in device_manager.enumerate_devices():
@@ -82,12 +81,13 @@ class Emulator:
         pid = frida_device.spawn(apk.package)
         self.frida_session = frida_device.attach(pid)
 
-        frida_device.resume(pid)
         for hook in hooks:
             script = self.frida_session.create_script(hook.script)
             script.on('message', hook_handler.on_hook)
             script.load()
             print("loaded hook: {}".format(hook.name))
+        time.sleep(0.5)
+        frida_device.resume(pid)
 
     def fool_around(self, apk, time_to_run: int):
         jester = Jester(self.viewclient, apk, time_to_run=time_to_run)

@@ -13,6 +13,8 @@ class AnalyzerMongo:
         self.coll = self.db.get_collection("samples")
 
     def add_new(self, md5: str, path: str):
+        if self.get_entry(md5):
+            return
         to_insert = SampleEntry(
             md5=md5,
             file_path=path
@@ -32,6 +34,9 @@ class AnalyzerMongo:
 
     def started(self, md5: str):
         self.coll.update_one({"md5": md5}, {"$set": {"started": True}})
+
+    def finished(self, md5: str):
+        self.coll.update_one({"md5": md5}, {"$set": {"finished": True}})
 
     def set_manifest_info(self, md5: str, manifest: ManifestInfo):
         self.coll.update_one({"md5": md5}, {"$set": {"manifest": manifest.to_dict()}})

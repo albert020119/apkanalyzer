@@ -65,6 +65,10 @@ def install_frida_server(device: ADB, cpu_arch):
         return False
 
 
+def stop_frida_server(device):
+    device.shell(['pkill', '-9', 'frida-server'])
+
+
 def start_frida_server(device):
     out, err = device.cmd(["root"])
     print(out)
@@ -76,3 +80,9 @@ def start_frida_server(device):
     get_pid_cmd = ["ps", "-A", "|", "grep", "frida"]
     output, _ = device.shell(get_pid_cmd)
     return output.decode('utf-8')
+
+
+def restart_frida(device):
+    stop_frida_server(device)
+    start_frida_server(device)
+
