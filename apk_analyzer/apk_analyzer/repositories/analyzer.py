@@ -42,4 +42,5 @@ class AnalyzerMongo:
         self.coll.update_one({"md5": md5}, {"$set": {"manifest": manifest.to_dict()}})
 
     def add_event(self, md5: str, hook_event: HookEvent):
-        self.coll.update_one({"md5": md5}, {"$set": {"hooks": hook_event.to_dict()}})
+        self.coll.update_one({"md5": md5}, {"$addToSet": {"hooks": hook_event.to_dict()}})
+

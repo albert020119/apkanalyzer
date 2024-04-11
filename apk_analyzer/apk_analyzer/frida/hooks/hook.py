@@ -13,6 +13,7 @@ class Hook:
 class HookEvent:
     type: str
     method: str
+    code: int
     timestamp: int
     args: list | str | None
     return_value: str | None
@@ -23,6 +24,7 @@ class HookEvent:
         return cls(
             type=data['type'],
             method=data['method'],
+            code=data['code'],
             timestamp=data['timestamp'],
             args=data.get('args', None),
             return_value=data.get('return_value', None),
@@ -32,6 +34,7 @@ class HookEvent:
         return {
             'type': self.type,
             'method': self.method,
+            'code': self.code,
             'timestamp': self.timestamp,
             'args': self.args,
             'return_value': self.return_value

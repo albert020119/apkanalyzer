@@ -5,8 +5,9 @@ from androguard.core.apk import APK
 
 from apk_analyzer.dto import AnalysisResult, StartAnalysis
 from .dto import AnalysisStatus
+from .dto.analysis_status import PermissionStatus, ManifestStatus, HookStatus
 from .emulators import EmulationPool
-from .config import EmulatorConfig
+from .config import EmulatorConfig, permissions_danger, permissions_descriptions, dynamic_info
 from .repositories import AnalyzerMongo, ManifestInfo
 from .frida.hooks import get_hooks, HookHandler
 
@@ -64,7 +65,22 @@ class ApkAnalyzer:
         db_entry = self.analyzer_db.get_entry(md5)
         return AnalysisStatus(
             md5=db_entry.md5,
+            found_emulator=db_entry.found_emulator,
             installed=db_entry.installed,
             started=db_entry.started,
-            manifest=db_entry.manifest.to_dict()
+            finished=db_entry.finished,
+            manifest=ManifestStatus(
+                pkn=db_entry.manifest.pkn,
+                permissions=[PermissionStatus(
+                    name=perm,
+                    code=permissions_danger.get(perm, 0),
+                    description=permissions_descriptions.get(perm, "")
+                ) for perm in db_entry.manifest.permissions]
+            ),
+            analysis=[HookStatus(
+                code=hook.get("code"),
+                type=hook.get("type"),
+                name=hook.get("method"),
+                description=dynamic_info.get(hook.get("type")).get(hook.get("method"))
+            ) for hook in db_entry.hooks]
         )

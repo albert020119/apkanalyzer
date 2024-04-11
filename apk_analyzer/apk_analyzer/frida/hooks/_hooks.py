@@ -9,7 +9,7 @@ def get_hooks():
         with open(os.path.join(path, file), "r") as f:
             contents = f.read()
             hook = Hook(
-                name=f.name.split(".")[0],
+                name=file.split(".")[0],
                 script=contents
             )
             hooks.append(hook)

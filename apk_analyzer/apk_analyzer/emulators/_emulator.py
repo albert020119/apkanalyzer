@@ -40,6 +40,10 @@ class Emulator:
         output, _ = self.adb.cmd(['uninstall', pkn])
         return output.decode('utf-8')
 
+    def send_random_sms(self):
+        output, _ = self.adb.cmd(["emu", "sms", "send", "12345", "asd"])
+        return output.decode('utf-8')
+
     @property
     def is_running(self):
         self.device, self.serialno = ViewClient.connectToDeviceOrExit(serialno="emulator-{}".format(self.port))
@@ -90,7 +94,7 @@ class Emulator:
         frida_device.resume(pid)
 
     def fool_around(self, apk, time_to_run: int):
-        jester = Jester(self.viewclient, apk, time_to_run=time_to_run)
+        jester = Jester(self, self.viewclient, apk, time_to_run=time_to_run)
         jester.start()
 
     def cancel_instrumentation(self):

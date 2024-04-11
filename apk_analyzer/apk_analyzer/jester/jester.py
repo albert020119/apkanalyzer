@@ -5,7 +5,8 @@ from com.dtmilano.android.viewclient import View
 
 
 class Jester:
-    def __init__(self, viewclient, apk, time_to_run: int):
+    def __init__(self, emulator,  viewclient, apk, time_to_run: int):
+        self.emulator = emulator
         self.viewclient = viewclient
         self.runtime = time_to_run
         self.apk = apk
@@ -29,6 +30,7 @@ class Jester:
             to_touch = self.identify_permission_screen(dump)
             if to_touch:
                 to_touch.touch()
+                self.emulator.send_random_sms()
                 continue
 
             to_touch = self.identify_special_permission_screen(dump)

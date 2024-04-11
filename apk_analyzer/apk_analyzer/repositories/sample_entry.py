@@ -1,5 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional, List
+
+from ..frida.hooks.hook import HookEvent
 
 
 @dataclass
@@ -28,7 +30,9 @@ class SampleEntry:
     installed: Optional[bool] = False
     found_emulator: Optional[bool] = False
     started: Optional[bool] = False
+    finished: Optional[bool] = False
     manifest: Optional[ManifestInfo | None] = None
+    hooks: List = field(default_factory=lambda: [])
 
     def to_dict(self) -> dict:
         return {
@@ -37,10 +41,12 @@ class SampleEntry:
             'installed': self.installed,
             'found_emulator': self.found_emulator,
             'started': self.started,
+            'finished': self.finished,
             'manifest': {
                 'pkn': self.manifest.pkn,
                 'perms': self.manifest.permissions
-            } if self.manifest else None
+            } if self.manifest else None,
+            "hooks": [he.to_dict() for he in self.hooks] if self.hooks else []
         }
 
     @classmethod
@@ -51,5 +57,7 @@ class SampleEntry:
             installed=data.get('installed', False),
             found_emulator=data.get('found_emulator', False),
             started=data.get('started', False),
-            manifest=ManifestInfo.from_dict(data.get('manifest')) if data.get('manifest') else None
+            finished=data.get('finished', False),
+            manifest=ManifestInfo.from_dict(data.get('manifest')) if data.get('manifest') else None,
+            hooks=data.get("hooks", [])
         )
