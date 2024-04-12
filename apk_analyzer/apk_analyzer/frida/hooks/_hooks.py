@@ -4,7 +4,7 @@ from .hook import Hook
 
 def get_hooks():
     hooks: list[Hook] = []
-    path = "apk_analyzer/frida/hooks/scripts"
+    path = "apk_analyzer/frida/hooks/hook_scripts"
     for file in os.listdir(path):
         with open(os.path.join(path, file), "r") as f:
             contents = f.read()
