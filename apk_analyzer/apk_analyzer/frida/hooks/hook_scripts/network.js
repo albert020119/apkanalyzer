@@ -7,7 +7,7 @@
   webview.loadUrl.overload('java.lang.String').implementation = function (url) {
     var timestamp = new Date().getTime();
     var hookEventData = {
-        type: 'newtork',
+        type: 'network',
         method: 'webview.loadUrl',
         code: 1,
         timestamp: timestamp,
@@ -25,7 +25,7 @@
 
     var timestamp = new Date().getTime();
     var hookEventData = {
-        type: 'newtork',
+        type: 'network',
         method: 'HttpURLConnection.getOutputStream',
         code: 1,
         timestamp: timestamp,
@@ -44,7 +44,7 @@
 
 	var timestamp = new Date().getTime();
     var hookEventData = {
-        type: 'newtork',
+        type: 'network',
         method: 'HttpURLConnection.getInputStream',
         code: 1,
         timestamp: timestamp,

@@ -3,9 +3,13 @@ import time
 
 import frida
 
+
+from threading import Thread
+
 from .adb import ADB
 from ..config import ADBConfig
-from ..frida.utils import get_frida_latest, download_frida_server, install_frida_server, start_frida_server, restart_frida
+from ..frida.utils import get_frida_latest, download_frida_server, install_frida_server, start_frida_server, \
+    restart_frida
 from ..frida.hooks import Hook, HookHandler
 from ..jester import Jester
 from com.dtmilano.android.viewclient import ViewClient
@@ -22,6 +26,7 @@ class Emulator:
         self.port = port
         self.available = True
         self.frida_session = None
+        self.clown = None
 
     def start_emulator(self):
         self.run_command(self.emulator_path, '-port', self.port, self.avd)
@@ -46,11 +51,13 @@ class Emulator:
 
     @property
     def is_running(self):
-        self.device, self.serialno = ViewClient.connectToDeviceOrExit(serialno="emulator-{}".format(self.port))
-        self.viewclient = ViewClient(device=self.device, serialno=self.serialno)
         output, _ = self.adb.shell(["getprop", "init.svc.bootanim"])
         is_running = True if output.decode('utf-8').strip() == 'stopped' else False
         return is_running
+
+    def connect_to_viewclient(self):
+        self.device, self.serialno = ViewClient.connectToDeviceOrExit(serialno="emulator-{}".format(self.port))
+        self.viewclient = ViewClient(device=self.device, serialno=self.serialno)
 
     def get_sdk(self):
         output, _ = self.adb.shell(["getprop", "ro.build.version.sdk"])
@@ -61,6 +68,9 @@ class Emulator:
 
     def available(self):
         return self.available
+
+    def reboot(self):
+        self.adb.cmd(["-e", "reboot"])
 
     def lock(self):
         self.available = False
@@ -95,10 +105,12 @@ class Emulator:
 
     def fool_around(self, apk, time_to_run: int):
         jester = Jester(self, self.viewclient, apk, time_to_run=time_to_run)
-        jester.start()
+        self.clown = Thread(target=jester.start)
+        self.clown.start()
+
+    def wait_for_clown(self):
+        self.clown.join()
 
     def cancel_instrumentation(self):
         self.frida_session.detach()
         self.frida_session = None
-
-

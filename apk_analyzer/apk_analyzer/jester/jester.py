@@ -15,52 +15,76 @@ class Jester:
         time_start = time.time()
 
         def end_loop():
-            if time.time() - time_start > self.runtime:
+            time_running = time.time() - time_start
+            print(time_running)
+            if time_running > self.runtime:
                 return True
             else:
                 return False
 
         while True:
             if end_loop():
-                break
+                return
 
-            time.sleep(1)
-            dump = self.viewclient.dump()
+            time.sleep(.5)
+            try:
+                dump = self.viewclient.dump()
 
-            to_touch = self.identify_permission_screen(dump)
-            if to_touch:
-                to_touch.touch()
-                self.emulator.send_random_sms()
-                continue
+                to_touch = self.identify_permission_screen(dump)
+                if to_touch:
+                    to_touch.touch()
+                    self.emulator.send_random_sms()
+                    continue
 
-            to_touch = self.identify_special_permission_screen(dump)
-            if to_touch:
-                to_touch.touch()
-                continue
+                to_touch = self.identify_special_permission_screen(dump)
+                if to_touch:
+                    to_touch.touch()
+                    continue
 
-            if self.is_login_screen(dump):
-                self.enter_creds(dump)
-                continue
+                if self.is_login_screen(dump):
+                    self.enter_creds(dump)
+                    continue
 
-            to_touch = self.get_random_button(dump)
-            if to_touch:
-                to_touch.touch()
-                continue
+                to_touch = self.get_random_button(dump)
+                if to_touch:
+                    to_touch.touch()
+                    continue
+            except Exception as e:
+                pass
 
             if end_loop():
-                break
+                return
         return
 
     def identify_special_permission_screen(self, dump: list[View]) -> View | None:  # TODO more special permissions
+        try:
+            apk_name = self.apk.get_app_name()
+        except:
+            apk_name = ""
+
         for view in dump:
+            print(view)
             if "Accessibility" in view["content-desc"]:
                 for view in dump:
-                    if self.apk.get_app_name() in view['text']:
+                    if apk_name in view['text']:
                         return view
-            if "Use " + self.apk.get_app_name() in view['text']:
+            if "Use " + apk_name in view['text']:
                 return view
             if view['resource-id'] == 'com.android.settings:id/permission_enable_allow_button':
                 return view
+
+            if "Allow from this source" in view['text']:
+                return view
+        buttons = [view for view in dump if view['class'] == 'android.widget.Button']
+        settings_button = [view for view in buttons if
+                           view['text'] == 'Settings']
+        install_button = [view for view in buttons if
+                           view['text'] == 'Install']
+        if len(settings_button):
+            return settings_button[0]
+        if len(install_button):
+            return install_button[0]
+
         return None
 
     @staticmethod

@@ -31,7 +31,8 @@ class ApkAnalyzer:
 
         emulator = self.emulation_pool.get_available_emulator(apk)
         if not emulator:
-            pass  # TODO no good emulator found, update stats to failed or sm
+            self.logger.info("no open emulator found")
+            return
         emulator.lock()
         self.logger.info("found emulator: {}".format(emulator.avd))
 
@@ -47,13 +48,15 @@ class ApkAnalyzer:
         )
         self.logger.info("loaded hooks")
 
+        emulator.connect_to_viewclient()
+        emulator.fool_around(apk, time_to_run=25)
         emulator.instrument(apk, hooks, hook_handler)
         self.analyzer_db.started(md5)
         self.logger.info("started application")
 
-        emulator.fool_around(apk, time_to_run=25)
         # TODO some config file that has analysis preferences, asta i din burta
 
+        emulator.wait_for_clown()
         emulator.cancel_instrumentation()
         emulator.release()
         emulator.uninstall(apk.package)

@@ -7,5 +7,10 @@ dynamic_info = {
     },
     "telephony": {
         "SmsManager.sendTextMessage": "The app was caught sending SMS messages without the users consent."
+    },
+    "network": {
+        "webview.loadUrl": "The app loaded various URLs in a webview.",
+        "HttpURLConnection.getInputStream": "The app communicated with URL.",
+        "HttpURLConnection.getOutputStream": "The app communicated with URL."
     }
 }
