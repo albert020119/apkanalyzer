@@ -6,4 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
+    <Button
+        android:id="@+id/scan_all"
+        android:layout_width="186dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="244dp"
+        android:layout_marginEnd="113dp"
+        android:text="Scan all files"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/files_scanned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="174dp"
+        android:layout_marginTop="49dp"
+        android:layout_marginEnd="179dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scan_all" />
 </androidx.constraintlayout.widget.ConstraintLayout>
