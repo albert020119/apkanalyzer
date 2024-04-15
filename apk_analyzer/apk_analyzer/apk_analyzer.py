@@ -66,6 +66,9 @@ class ApkAnalyzer:
 
     async def get_status(self, md5: str) -> AnalysisStatus | None:
         db_entry = self.analyzer_db.get_entry(md5)
+        if not db_entry:
+            return None
+
         return AnalysisStatus(
             md5=db_entry.md5,
             found_emulator=db_entry.found_emulator,
@@ -85,5 +88,5 @@ class ApkAnalyzer:
                 type=hook.get("type"),
                 name=hook.get("method"),
                 description=dynamic_info.get(hook.get("type")).get(hook.get("method"))
-            ) for hook in db_entry.hooks]
+            ) for hook in db_entry.hooks if dynamic_info.get(hook.get("type"))]
         )
