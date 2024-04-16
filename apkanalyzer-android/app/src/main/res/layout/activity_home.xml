@@ -22,11 +22,25 @@
         android:id="@+id/files_scanned"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="174dp"
-        android:layout_marginTop="49dp"
-        android:layout_marginEnd="179dp"
+        android:layout_marginStart="176dp"
+        android:layout_marginTop="194dp"
+        android:layout_marginEnd="177dp"
+        android:layout_marginBottom="31dp"
         android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/scan_all"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scan_all" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/scans_view"
+        android:layout_width="409dp"
+        android:layout_height="356dp"
+        android:clickable="false"
+        android:contextClickable="true"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scan_all"
+        tools:layout_editor_absoluteX="1dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

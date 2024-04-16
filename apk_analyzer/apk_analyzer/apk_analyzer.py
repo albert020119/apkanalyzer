@@ -26,6 +26,7 @@ class ApkAnalyzer:
         apk = APK(filepath.encode('utf-8'))
         self.analyzer_db.set_manifest_info(md5, ManifestInfo(
             pkn=apk.package,
+            label=apk.get_app_name(),
             permissions=apk.get_permissions()
         ))
 
@@ -68,6 +69,20 @@ class ApkAnalyzer:
         db_entry = self.analyzer_db.get_entry(md5)
         if not db_entry:
             return None
+        hooks = []
+        for hook in db_entry.hooks:
+            present = False
+            for added in hooks:
+                if hook.get("type") == added.type and hook.get("code") == added.code and hook.get("method") == added.name:
+                    present = True
+            if present:
+                continue
+            hooks.append(HookStatus(
+                code=hook.get("code"),
+                type=hook.get("type"),
+                name=hook.get("method"),
+                description=dynamic_info.get(hook.get("type", {}), {}).get(hook.get("method"))
+            ))
 
         return AnalysisStatus(
             md5=db_entry.md5,
@@ -77,16 +92,12 @@ class ApkAnalyzer:
             finished=db_entry.finished,
             manifest=ManifestStatus(
                 pkn=db_entry.manifest.pkn,
+                label=db_entry.manifest.label,
                 permissions=[PermissionStatus(
                     name=perm,
                     code=permissions_danger.get(perm, 0),
                     description=permissions_descriptions.get(perm, "")
                 ) for perm in db_entry.manifest.permissions]
             ),
-            analysis=[HookStatus(
-                code=hook.get("code"),
-                type=hook.get("type"),
-                name=hook.get("method"),
-                description=dynamic_info.get(hook.get("type")).get(hook.get("method"))
-            ) for hook in db_entry.hooks if dynamic_info.get(hook.get("type"))]
+            analysis=hooks
         )

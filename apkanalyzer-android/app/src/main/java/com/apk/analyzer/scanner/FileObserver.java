@@ -27,7 +27,7 @@ public class FileObserver extends android.os.FileObserver {
                 //Log.d(TAG, "File or directory " + path + " was deleted");
                 break;
             case FileObserver.CREATE:
-                //Log.d(TAG, "File or directory " + path + " was created");
+                Log.d(TAG, "File or directory " + path + " was created");
                 break;
             case FileObserver.CLOSE_WRITE:
                 //Log.d(TAG, "File or directory " + path + " was closed for writing");

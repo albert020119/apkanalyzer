@@ -7,18 +7,21 @@ from ..frida.hooks.hook import HookEvent
 @dataclass
 class ManifestInfo:
     pkn: str
+    label: str
     permissions: List[str]
 
     @classmethod
     def from_dict(cls, data: dict) -> 'ManifestInfo':
         return cls(
             data.get('pkn'),
+            data.get('label'),
             data.get('perms')
         )
 
     def to_dict(self) -> dict:
         return {
             'pkn': self.pkn,
+            'label': self.label,
             'perms': self.permissions
         }
 

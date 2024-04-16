@@ -1,5 +1,9 @@
 package com.apk.analyzer.utils;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,5 +38,13 @@ public class Helpers {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static Drawable getIcon(File file, PackageManager pm){
+        PackageInfo pi = pm.getPackageArchiveInfo(file.getPath(), 0);
+        pi.applicationInfo.sourceDir       = file.getPath();
+        pi.applicationInfo.publicSourceDir = file.getPath();
+        Drawable APKicon = pi.applicationInfo.loadIcon(pm);
+        return APKicon;
     }
 }

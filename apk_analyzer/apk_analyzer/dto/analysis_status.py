@@ -19,6 +19,7 @@ class PermissionStatus:
 @dataclass
 class ManifestStatus:
     pkn: str
+    label: str
     permissions: list[PermissionStatus]
 
 
