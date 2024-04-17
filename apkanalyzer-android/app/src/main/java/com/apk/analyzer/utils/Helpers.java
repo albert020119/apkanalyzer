@@ -47,4 +47,12 @@ public class Helpers {
         Drawable APKicon = pi.applicationInfo.loadIcon(pm);
         return APKicon;
     }
+
+    public static Drawable getIcon(String path, PackageManager pm){
+        PackageInfo pi = pm.getPackageArchiveInfo(path, 0);
+        pi.applicationInfo.sourceDir       = path;
+        pi.applicationInfo.publicSourceDir = path;
+        Drawable APKicon = pi.applicationInfo.loadIcon(pm);
+        return APKicon;
+    }
 }

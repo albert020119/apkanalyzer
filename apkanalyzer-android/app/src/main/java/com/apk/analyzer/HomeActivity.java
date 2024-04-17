@@ -35,12 +35,11 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
     public static RecyclerView recyclerView;
     public List<AnalysisStatus> scans;
     public ScanRecyclerAdapter scan_adapter;
-    Map<String, Drawable> md5_icons;
 
     public Handler myHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            System.out.println("din main thread:" + msg);
+            System.out.println("main activity:" + msg);
             for (int i = 0; i < scans.size(); i++){
                 System.out.println(scans.get(i).md5 + " " + ((AnalysisStatus)msg.obj).md5);
                 if (scans.get(i).md5.equals(((AnalysisStatus)msg.obj).md5)){
@@ -65,13 +64,11 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
         fileObserver.startWatching();
         deviceScanner = new DeviceScanner();
         scans = new ArrayList<AnalysisStatus>();
-        md5_icons = new HashMap<String, Drawable>();
         initialize_ui();
     }
 
     private void initialize_ui(){
         setContentView(R.layout.activity_home);
-        Button btn = (Button)findViewById(R.id.scan_all);
         TextView scannedView = (TextView) findViewById(R.id.files_scanned);
         recyclerView = findViewById(R.id.scans_view);
         scan_adapter = new ScanRecyclerAdapter(this.scans);
@@ -79,6 +76,8 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setAdapter(scan_adapter);
         recyclerView.setLayoutManager(llm);
+
+        Button btn = (Button)findViewById(R.id.scan_all);
         btn.setOnClickListener(new View.OnClickListener()
         {
             @SuppressLint("SetTextI18n")
@@ -121,10 +120,8 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
         for (File file : apkFiles) {
             System.out.println("File Name: " + file.getName());
             String filehash = calculateMD5(file);
-            Drawable icon = getIcon(file, getPackageManager());
-            md5_icons.put(filehash, icon);
             System.out.println(filehash);
-            Analysis analysis = new Analysis(file, filehash, myHandler, md5_icons);
+            Analysis analysis = new Analysis(file, filehash, myHandler);
             analysis.start();
         }
     }

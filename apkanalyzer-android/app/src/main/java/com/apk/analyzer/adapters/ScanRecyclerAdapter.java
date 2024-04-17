@@ -1,24 +1,39 @@
 package com.apk.analyzer.adapters;
 
+
+import static android.app.PendingIntent.getActivity;
+import static androidx.core.content.ContextCompat.startActivity;
+
+import static com.apk.analyzer.utils.Helpers.getIcon;
+
 import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.apk.analyzer.AnalysisActivity;
+import com.apk.analyzer.HomeActivity;
 import com.apk.analyzer.R;
 import com.apk.analyzer.scanner.AnalysisStatus;
+import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class ScanRecyclerAdapter extends RecyclerView.Adapter<ScanRecyclerAdapter.ViewHolder>{
     private List<AnalysisStatus> localDataSet;
+    private Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView md5_textView;
@@ -65,21 +80,21 @@ public class ScanRecyclerAdapter extends RecyclerView.Adapter<ScanRecyclerAdapte
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.analysis_card_layout, viewGroup, false);
-
+        this.context = viewGroup.getContext();
         return new ViewHolder(view);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.get_app_label_textView().setText(localDataSet.get(position).manifest.label);
         viewHolder.get_md5_textView().setText("md5 hash: " + localDataSet.get(position).md5);
         viewHolder.get_pkn_textView().setText(localDataSet.get(position).manifest.pkn);
-        viewHolder.get_apk_icon().setImageDrawable(localDataSet.get(position).icon);
+        viewHolder.get_apk_icon().setImageDrawable(getIcon(localDataSet.get(position).path, context.getPackageManager()));
         if (localDataSet.get(position).finished){
             viewHolder.getAnalysis_in_progress_textview().setText("Analysis Finished");
             viewHolder.getAnalysis_progress_bar().setVisibility(View.INVISIBLE);
@@ -89,6 +104,15 @@ public class ScanRecyclerAdapter extends RecyclerView.Adapter<ScanRecyclerAdapte
             viewHolder.getAnalysis_progress_bar().setVisibility(View.VISIBLE);
             viewHolder.getAnalysis_finished_imageview().setVisibility(View.INVISIBLE);
         }
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), AnalysisActivity.class);
+                String content = new Gson().toJson(localDataSet.get(position));
+                intent.putExtra("analysis_status", content);
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)

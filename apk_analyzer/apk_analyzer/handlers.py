@@ -1,7 +1,9 @@
+from typing import Union
+
 from fastapi import APIRouter, UploadFile, BackgroundTasks
 
 from apk_analyzer import ApkAnalyzer
-from apk_analyzer.dto import StartAnalysis, AnalysisStatus
+from apk_analyzer.dto import StartAnalysis, AnalysisStatus, SampleNotFound
 from utils.logutils import get_logger
 
 from .utils import download_file, calc_md5
@@ -25,9 +27,9 @@ async def analyze_apk(file: UploadFile, background_tasks: BackgroundTasks):
     return StartAnalysis(md5=checksum, filename=file.filename)
 
 
-@router.get("/status", response_model=AnalysisStatus)
+@router.get("/status", response_model=Union[AnalysisStatus, SampleNotFound])
 async def update_status(md5: str):
     result = await analyzer.get_status(md5)
     if not result:
-        return {}
+        return SampleNotFound()
     return result

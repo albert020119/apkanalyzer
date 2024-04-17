@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AnalysisActivity">
+
+    <ImageView
+        android:id="@+id/analysis_activity_apk_icon"
+        android:layout_width="164dp"
+        android:layout_height="164dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="74dp"
+        android:contentDescription="@string/app_name"
+        android:padding="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/analysis_activity_apk_label"
+        android:layout_width="129dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="96dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintStart_toEndOf="@+id/analysis_activity_apk_icon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="222dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="94dp"
+        android:layout_marginEnd="95dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/analysis_activity_apk_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/analysis_activity_pkg_constant"
+        android:layout_width="136dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="52dp"
+        android:text="@string/package_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/analysis_activity_apk_icon" />
+
+    <TextView
+        android:id="@+id/analysis_activity_pkg_variable"
+        android:layout_width="175dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="52dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toEndOf="@+id/analysis_activity_pkg_constant"
+        app:layout_constraintTop_toBottomOf="@+id/analysis_activity_apk_icon" />
+
+    <TextView
+        android:id="@+id/md5_hash_constant_textview"
+        android:layout_width="136dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/md5_hash"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/analysis_activity_pkg_constant" />
+
+    <TextView
+        android:id="@+id/md5_hash_variable_textview"
+        android:layout_width="188dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintStart_toEndOf="@+id/md5_hash_constant_textview"
+        app:layout_constraintTop_toBottomOf="@+id/analysis_activity_pkg_variable" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/HookInfos"
+        android:layout_width="409dp"
+        android:layout_height="345dp"
+        android:layout_marginTop="28dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/md5_hash_variable_textview" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
