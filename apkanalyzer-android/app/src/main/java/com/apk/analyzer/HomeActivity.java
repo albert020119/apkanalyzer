@@ -33,10 +33,10 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
     public static FileObserver fileObserver;
     public static DeviceScanner deviceScanner;
     public static RecyclerView recyclerView;
-    public List<AnalysisStatus> scans;
-    public ScanRecyclerAdapter scan_adapter;
+    public static List<AnalysisStatus> scans;
+    public static ScanRecyclerAdapter scan_adapter;
 
-    public Handler myHandler = new Handler(new Handler.Callback() {
+    public static Handler myHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             System.out.println("main activity:" + msg);
@@ -59,10 +59,10 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        File sdcard = new File("/sdcard");
+        File sdcard = new File(Environment.getExternalStorageDirectory().getPath());
         fileObserver = new FileObserver(sdcard);
         fileObserver.startWatching();
-        deviceScanner = new DeviceScanner();
+        deviceScanner = new DeviceScanner(getApplicationContext());
         scans = new ArrayList<AnalysisStatus>();
         initialize_ui();
     }

@@ -1,5 +1,11 @@
 package com.apk.analyzer.scanner;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,15 +18,17 @@ public class DeviceScanner {
     public boolean last_scan_finished;
     private int total_nr_files_scanned;
     private int last_nr_files_scanned;
+    private Context ctx;
 
 
     public interface ScanListener {
         void onScanCompleted(List<File> apkFiles);
     }
 
-    public DeviceScanner(){
+    public DeviceScanner(Context ctx){
         this.total_nr_files_scanned = 0;
         this.last_nr_files_scanned = 0;
+        this.ctx = ctx;
     }
 
     public int getNrFilesScanned(){
@@ -46,6 +54,7 @@ public class DeviceScanner {
         List<File> apkFiles = new ArrayList<>();
         File folder = new File(folderPath);
         scanFolderForAPKs(folder, apkFiles);
+        scanInstalledAPKs(apkFiles);
         return apkFiles;
     }
 
@@ -65,6 +74,20 @@ public class DeviceScanner {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public void scanInstalledAPKs(List<File> apkFiles){
+        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<ApplicationInfo> apps = ctx.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+        for (ApplicationInfo info : apps) {
+            System.out.println(info.publicSourceDir);
+            File file = new File(info.publicSourceDir);
+            if (((info.flags & ApplicationInfo.FLAG_SYSTEM) != 1) & (!info.packageName.equals(ctx.getPackageName()))){
+                System.out.println("INSTALLED THIRD PARTY: " + info.publicSourceDir);
+                apkFiles.add(file);
             }
         }
     }

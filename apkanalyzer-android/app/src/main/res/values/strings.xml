@@ -9,7 +9,8 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="package_name">Package Name:</string>
-    <string name="md5_hash">MD5 hash:</string>
-    <string name="method_called">Method Called:</string>
+    <string name="package_name"><b>Package Name:</b></string>
+    <string name="md5_hash"><b>MD5 hash:</b></string>
+    <string name="method_called"><b>Method Called:</b></string>
+    <string name="description"><b>Description:</b></string>
 </resources>

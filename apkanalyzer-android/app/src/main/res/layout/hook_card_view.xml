@@ -20,6 +20,7 @@
         will add padding in API v21+ as well to have the same measurements with previous versions -->
 
     <RelativeLayout
+        android:id="@+id/hook_card"
         android:layout_width="match_parent"
         android:layout_height="171dp">
 
@@ -35,7 +36,10 @@
             android:layout_marginTop="37dp"
             android:layout_marginEnd="175dp"
             android:layout_marginBottom="115dp"
-            android:text="@string/method_called" />
+            android:text="@string/method_called"
+            android:textAllCaps="false"
+            android:textDirection="firstStrongRtl"
+            android:textIsSelectable="false" />
 
         <TextView
             android:id="@+id/method_name_variable"
@@ -46,5 +50,33 @@
             android:layout_marginTop="37dp"
             android:layout_marginEnd="14dp" />
 
+        <ImageView
+            android:id="@+id/hook_sign"
+            android:layout_width="81dp"
+            android:layout_height="95dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            app:srcCompat="@drawable/info_logo_png" />
+
+        <TextView
+            android:id="@+id/description_constant"
+            android:layout_width="95dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="80dp"
+            android:text="@string/description" />
+
+        <TextView
+            android:id="@+id/description_content"
+            android:layout_width="174dp"
+            android:layout_height="79dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="79dp"
+            android:layout_toEndOf="@+id/description_constant" />
+
     </RelativeLayout>
+
 </androidx.cardview.widget.CardView>

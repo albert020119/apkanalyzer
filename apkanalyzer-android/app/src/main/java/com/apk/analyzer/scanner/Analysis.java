@@ -25,6 +25,7 @@ public class Analysis extends Thread{
     @Override
     public void run(){
         String initial_resp = Backend.sendGetRequest("http://10.0.2.2:8000/status?md5=" + this.md5);
+        System.out.println("initial resp: " + initial_resp);
         if (initial_resp.contains("Sample could not be found")){
             Backend.sendPostRequest("http://10.0.2.2:8000/apk", this.file);
         }
@@ -43,7 +44,6 @@ public class Analysis extends Thread{
                 this.finished = true;
             }
 
-            System.out.println(as);
             Message msg = handler.obtainMessage();
             msg.what = 1;
             msg.obj = as;
