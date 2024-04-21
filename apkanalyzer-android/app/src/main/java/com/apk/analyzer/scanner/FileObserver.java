@@ -24,35 +24,14 @@ public class FileObserver extends android.os.FileObserver {
     @Override
     public void onEvent(int event, String path) {
         switch (event) {
-            case FileObserver.ACCESS:
-                //Log.d(TAG, "File or directory " + path + " was accessed");
-                break;
-            case FileObserver.MODIFY:
-                //Log.d(TAG, "File or directory " + path + " was modified");
-                break;
-            case FileObserver.DELETE:
-                //Log.d(TAG, "File or directory " + path + " was deleted");
-                break;
-            case FileObserver.CREATE:
-                // HomeActivity.my
-                Log.d(TAG, "File or directory " + path + " was created");
+            case FileObserver.CLOSE_WRITE:
+                Log.d(TAG, "File or directory " + path + " was closed for writing");
                 String finalPath = FileObserver.parentFile + "/" + path;
                 File file = new File(finalPath);
                 String filehash = calculateMD5(file);
                 Analysis analysis = new Analysis(file, filehash, myHandler);
-                analysis.start(); // TODO cred ca calculeaza md5 gresit imi bag pula in ea
-                break;
-            case FileObserver.CLOSE_WRITE:
-                //Log.d(TAG, "File or directory " + path + " was closed for writing");
-                break;
-            case FileObserver.CLOSE_NOWRITE:
-                //Log.d(TAG, "File or directory " + path + " was closed for reading");
-                break;
-            case FileObserver.OPEN:
-                //Log.d(TAG, "File or directory " + path + " was opened");
-                break;
+                analysis.start(); // TODO send some notification to user
             default:
-                //Log.d(TAG, "Event occurred on " + path + ": " + event);
                 break;
         }
     }

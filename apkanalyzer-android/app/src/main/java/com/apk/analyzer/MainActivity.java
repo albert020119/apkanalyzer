@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
         Button btn = (Button)findViewById(R.id.get_permission);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) & Environment.isExternalStorageManager()) {
+                    == PackageManager.PERMISSION_GRANTED) &
+                    (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                            == PackageManager.PERMISSION_GRANTED) & Environment.isExternalStorageManager()) {
                 findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
                 findViewById(R.id.imageView).setVisibility(View.VISIBLE);
                 Intent myIntent = new Intent(MainActivity.this, HomeActivity.class);
@@ -60,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) && !Environment.isExternalStorageManager()){
+                    != PackageManager.PERMISSION_GRANTED) | (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) | !Environment.isExternalStorageManager()){
                 // Permission not granted, request it
 
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 System.out.println("Started intent");
                 ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.POST_NOTIFICATIONS},
                         1);
             } else {
                 findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);

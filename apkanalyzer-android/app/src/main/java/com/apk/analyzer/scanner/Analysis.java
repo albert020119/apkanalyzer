@@ -25,8 +25,10 @@ public class Analysis extends Thread{
     @Override
     public void run(){
         String initial_resp = Backend.sendGetRequest("http://10.0.2.2:8000/status?md5=" + this.md5);
-        System.out.println("initial resp: " + initial_resp);
-        if (initial_resp.contains("Sample could not be found")){
+        Gson gson = new Gson();
+        AnalysisStatus as = gson.fromJson(initial_resp, AnalysisStatus.class);
+        if (!as.finished){
+            System.out.println("starting sample analysis");
             Backend.sendPostRequest("http://10.0.2.2:8000/apk", this.file);
         }
         while(!this.finished){
@@ -37,8 +39,8 @@ public class Analysis extends Thread{
             }
 
             String status = Backend.sendGetRequest("http://10.0.2.2:8000/status?md5=" + this.md5);
-            Gson gson = new Gson();
-            AnalysisStatus as = gson.fromJson(status, AnalysisStatus.class);
+            gson = new Gson();
+            as = gson.fromJson(status, AnalysisStatus.class);
             as.path = file.getPath();
             if (as.finished) {
                 this.finished = true;
