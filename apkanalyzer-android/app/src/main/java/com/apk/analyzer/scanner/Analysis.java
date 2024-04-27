@@ -1,9 +1,12 @@
 package com.apk.analyzer.scanner;
 
+import static com.apk.analyzer.HomeActivity.scansCache;
+
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 
+import com.apk.analyzer.cache.Scan;
 import com.apk.analyzer.network.Backend;
 import com.google.gson.Gson;
 
@@ -42,8 +45,15 @@ public class Analysis extends Thread{
             gson = new Gson();
             as = gson.fromJson(status, AnalysisStatus.class);
             as.path = file.getPath();
-            if (as.finished) {
+            if (as.finished){
+                System.out.println("size of cache: " + scansCache.getAll().size());
                 this.finished = true;
+                Scan scan = new Scan();
+                scan.md5 = md5;
+                scan.pkn = as.manifest.pkn;
+                scan.scan_time = System.currentTimeMillis() / 1000L;
+                scansCache.insertAll(scan);
+                System.out.println("added " + md5 + " to local cache");
             }
 
             Message msg = handler.obtainMessage();

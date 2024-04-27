@@ -6,6 +6,7 @@ import static com.apk.analyzer.utils.Helpers.getIcon;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
@@ -18,6 +19,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.apk.analyzer.adapters.ScanRecyclerAdapter;
+import com.apk.analyzer.cache.AppDatabase;
+import com.apk.analyzer.cache.ScansCache;
 import com.apk.analyzer.scanner.Analysis;
 import com.apk.analyzer.scanner.AnalysisStatus;
 import com.apk.analyzer.scanner.DeviceScanner;
@@ -35,11 +38,10 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
     public static RecyclerView recyclerView;
     public static List<AnalysisStatus> scans;
     public static ScanRecyclerAdapter scan_adapter;
-
+    public static ScansCache scansCache;
     public static Handler myHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            System.out.println("main activity:" + msg);
             for (int i = 0; i < scans.size(); i++){
                 System.out.println(scans.get(i).md5 + " " + ((AnalysisStatus)msg.obj).md5);
                 if (scans.get(i).md5.equals(((AnalysisStatus)msg.obj).md5)){
@@ -64,6 +66,9 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
         fileObserver.startWatching();
         deviceScanner = new DeviceScanner(getApplicationContext());
         scans = new ArrayList<AnalysisStatus>();
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "scans").build();
+        scansCache = db.scansCache();
         initialize_ui();
     }
 
