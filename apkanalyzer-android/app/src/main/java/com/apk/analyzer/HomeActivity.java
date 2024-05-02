@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
@@ -94,6 +95,14 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
 
         });
 
+        Button btn2 = (Button)findViewById(R.id.past_scans_button);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(HomeActivity.this, ScanLogActivity.class);
+                startActivity(myIntent);
+            }
+        });
         new Thread(new Runnable() {
             @Override
             public void run() {
