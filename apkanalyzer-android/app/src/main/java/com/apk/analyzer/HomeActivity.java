@@ -107,19 +107,16 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
             @Override
             public void run() {
                 while (true) {
-                    // Update the UI on the main thread
                     runOnUiThread(new Runnable() {
                         @SuppressLint("SetTextI18n")
                         @Override
                         public void run() {
-                            // Update the TextView with the number of files scanned
                             scannedView.setText("Number of files scanned: " + HomeActivity.deviceScanner.getNrFilesScanned());
                         }
                     });
 
                     try {
-                        // Add a delay to avoid updating the UI too frequently
-                        Thread.sleep(1000); // Update every 1 second (adjust as needed)
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
