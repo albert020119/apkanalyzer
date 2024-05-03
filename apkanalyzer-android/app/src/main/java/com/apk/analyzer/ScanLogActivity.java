@@ -2,6 +2,7 @@ package com.apk.analyzer;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,17 +21,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScanLogActivity extends AppCompatActivity {
+    private ListView listView;
+    private ArrayAdapter<Scan> adapter;
+    private List<Scan> scanList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scan_log);
-        ListView lv = findViewById(R.id.scan_list);
+
+        listView = findViewById(R.id.scan_list);
+        scanList = new ArrayList<>();
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, scanList);
+        listView.setAdapter(adapter);
+
         new Thread(() -> {
             List<Scan> scans = HomeActivity.scansCache.getAll();
-            for (Scan scan : scans) {
-                // TODO add to list view
-            }
+            runOnUiThread(() -> {
+                scanList.addAll(scans);
+                adapter.notifyDataSetChanged();
+            });
         }).start();
-
     }
 }
+
