@@ -37,7 +37,7 @@ class ApkAnalyzer:
         emulator.lock()
         self.logger.info("found emulator: {}".format(emulator.avd))
 
-        emulator.install_sample(filepath)  # TODO was it really installed
+        emulator.install_sample(filepath)
         self.logger.info("installed sample on emulator")
         self.analyzer_db.installed(md5)
 
@@ -55,7 +55,6 @@ class ApkAnalyzer:
         self.analyzer_db.started(md5)
         self.logger.info("started application")
 
-        # TODO some config file that has analysis preferences, asta i din burta
 
         emulator.wait_for_clown()
         emulator.cancel_instrumentation()
