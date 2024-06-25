@@ -26,6 +26,7 @@ import com.apk.analyzer.scanner.Analysis;
 import com.apk.analyzer.scanner.AnalysisStatus;
 import com.apk.analyzer.scanner.DeviceScanner;
 import com.apk.analyzer.scanner.FileObserver;
+import com.apk.analyzer.scanner.FileObserverService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -62,9 +63,8 @@ public class HomeActivity extends AppCompatActivity implements DeviceScanner.Sca
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        File sdcard = new File(Environment.getExternalStorageDirectory().getPath());
-        fileObserver = new FileObserver(sdcard);
-        fileObserver.startWatching();
+        Intent intent = new Intent(this, FileObserverService.class);
+        startService(intent);
         deviceScanner = new DeviceScanner(getApplicationContext());
         scans = new ArrayList<AnalysisStatus>();
         AppDatabase db = Room.databaseBuilder(getApplicationContext(),

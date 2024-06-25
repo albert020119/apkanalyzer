@@ -44,6 +44,9 @@ public class Analysis extends Thread{
             String status = Backend.sendGetRequest("http://10.0.2.2:8000/status?md5=" + this.md5);
             gson = new Gson();
             as = gson.fromJson(status, AnalysisStatus.class);
+            if (as == null){
+                continue;
+            }
             as.path = file.getPath();
             if (as.finished){
                 System.out.println("size of cache: " + scansCache.getAll().size());

@@ -22,8 +22,14 @@ class ApkAnalyzer:
 
     def analyze(self, filepath: str, md5: str) -> AnalysisResult:
         self.logger.info(f"starting to analyze sample: {filepath}")
-
+        self.analyzer_db.set_manifest_info(md5, ManifestInfo(
+            pkn="",
+            label="",
+            permissions=[]
+        ))
+        apk_parsing = time.time()
         apk = APK(filepath.encode('utf-8'))
+        self.logger.info("apk parsing for md5 {} took {}".format(md5, time.time() - apk_parsing))
         self.analyzer_db.set_manifest_info(md5, ManifestInfo(
             pkn=apk.package,
             label=apk.get_app_name(),
@@ -55,7 +61,6 @@ class ApkAnalyzer:
         self.analyzer_db.started(md5)
         self.logger.info("started application")
 
-
         emulator.wait_for_clown()
         emulator.cancel_instrumentation()
         emulator.release()
@@ -72,7 +77,8 @@ class ApkAnalyzer:
         for hook in db_entry.hooks:
             present = False
             for added in hooks:
-                if hook.get("type") == added.type and hook.get("code") == added.code and hook.get("method") == added.name:
+                if hook.get("type") == added.type and hook.get("code") == added.code and hook.get(
+                        "method") == added.name:
                     present = True
             if present:
                 continue

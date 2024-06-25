@@ -25,7 +25,7 @@ class EmulationPool:
     def start_emulators(self):
         for emulator in self.emulators:
             emulator.start_emulator()
-        time.sleep(25)
+        time.sleep(55)
         for emulator in self.emulators:
             print("{} is running: {}".format(emulator.avd, emulator.is_running))
 
