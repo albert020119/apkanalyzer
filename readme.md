@@ -1,6 +1,6 @@
 # Apkanalyzer 
 
-This repository hosts an application designed for the dynamic analysis of APK files using the Frida dynamic instrumentation toolkit. The application automates the process of installing Android applications in isolated environments, such as emulators, and performs dynamic analysis to identify potential security threats.
+Apkanalyzer is an application designed for the dynamic analysis of APK files using the Frida dynamic instrumentation toolkit. The application automates the process of installing Android applications in isolated environments, such as emulators, and performs dynamic analysis to identify potential security threats.
 
 Additionally, a proof-of-concept Android application is presented to demonstrate the analyzer's ability to flag malicious APKs during download or installation on a user's phone.
 
